@@ -26,8 +26,21 @@ actualizar();
 export const sinMovimiento = () => pausado || preferencia.matches;
 
 // Hace que los elementos de una pantalla nueva entren escalonados.
-export function animarEntrada(raiz) {
+export function animarEntrada(raiz, vista) {
   document.body.classList.toggle('in-game', !raiz.querySelector('.hero'));
+  const stage = raiz.querySelector('.stage');
+  if (stage && vista.fase !== 'lobby') {
+    const progreso = document.createElement('ol');
+    progreso.className = 'rondas';
+    progreso.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < vista.rondas; i++) {
+      const segmento = document.createElement('li');
+      segmento.classList.toggle('completa', i < vista.ronda || vista.fase === 'fin');
+      segmento.classList.toggle('actual', i === vista.ronda && vista.fase !== 'fin');
+      progreso.append(segmento);
+    }
+    stage.firstElementChild.after(progreso);
+  }
   raiz.querySelectorAll('.stage > *, .hero > div:first-child > *').forEach((el, i) => {
     el.style.setProperty('--entry-delay', `${Math.min(i * 45, 270)}ms`);
     el.classList.add('scene-entry');

@@ -18,6 +18,7 @@ export function actualizar(el, v, ctx) {
   const progreso = el.querySelector('#progreso');
   const texto = `${v.votos.hechos} de ${v.votos.total} ya votaron.`;
   if (progreso.textContent !== texto) progreso.textContent = texto;
+  el.querySelector('.avance-votos').style.setProperty('--avance', v.votos.hechos / v.votos.total);
   const form = el.querySelector('form');
   if (form && v.yo.voto) {
     const mensaje = document.createElement('p');
@@ -76,6 +77,7 @@ function actualizarTurno(el, v, ctx) {
   const mio = turno.pid === v.yo.pid;
   el.querySelector('#numero-turno').textContent = `Turno ${actual + 1} de ${orden.length}`;
   el.querySelector('#turno-actual').textContent = mio ? 'Te toca hablar' : `Es el turno de ${turno.nombre}`;
+  el.querySelector('.zona-turno').classList.toggle('turno-propio', mio);
   const boton = el.querySelector('#pista');
   boton.hidden = !mio;
   boton.disabled = false;
@@ -93,9 +95,10 @@ function montarVotacion(el, v, ctx) {
   el.innerHTML = `<section class="stage">
     <p class="kicker">${fase(v, 'VOTACIÓN')}</p>
     <h2 tabindex="-1">¿Quién improvisó?</h2>
-    <p>Vota en secreto por quien crees que recibió solo la pista general.</p>
+    <p>Vota en secreto por quien crees que recibió solo la pista general. Se necesitan ${v.votos.mayoria} votos para descubrir al impostor.</p>
     ${reloj}
     <p id="progreso" class="estado" role="status"></p>
+    <div class="avance-votos" aria-hidden="true"></div>
     <form>
       <fieldset class="opciones-juego">
         <legend class="kicker">Elige a un jugador</legend>

@@ -47,11 +47,13 @@ public/
 ## Fases de una ronda
 
 `lobby` → `rol` → `pistas` (20 s por jugador) → `votacion` (45 s o hasta que todos voten).
-Si el impostor recibe más votos que cualquier otro jugador, tiene 25 segundos para identificar
-el caso entre cuatro opciones. Luego se muestra la revelación con el recuento, la fuente y la pregunta
-de cierre. El anfitrión pasa a la siguiente ronda o al podio final.
+Si más de la mitad de los jugadores vota por el impostor, tiene 25 segundos para identificar
+el caso entre cuatro opciones. Las abstenciones cuentan para calcular el umbral. Si falta mayoría,
+la ronda termina sin expulsión y el rol queda en secreto. En ambos casos se muestra el recuento,
+la fuente y la pregunta de cierre. El anfitrión pasa a la siguiente ronda o al podio final.
 
 Cada voto acertado suma 2 puntos. El impostor gana 3 si escapa con al menos un voto emitido,
-o 2 si lo descubren y acierta el caso. Un empate en el primer lugar permite que el impostor escape.
+o 2 si lo descubren y acierta el caso. Los puntos de las rondas sin expulsión se muestran al final
+de la partida para guardar el secreto del rol.
 
 Los tiempos están en `REGLAS` dentro de `lib/juego.js`.

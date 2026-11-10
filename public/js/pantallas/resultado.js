@@ -5,31 +5,18 @@ import { esc, dos, fase, jugador } from '../ui.js';
 export function montar(el, v, ctx) {
   if (v.fase === 'fin') return montarFin(el, v, ctx);
   const r = v.resultado;
-  const imp = jugador(v, r.impostor);
   const ultima = v.ronda + 1 >= v.rondas;
   const anfitrion = v.jugadores.find(j => j.anfitrion);
-  const ganancias = Object.entries(r.ganancias);
-  const resumen = r.emitidos === 0 ? 'La ronda terminó sin votos.'
-    : r.descubierto ? 'Fue la persona más votada.'
-    : 'Escapó porque otra persona recibió más votos o hubo un empate.';
-  const intento = r.adivino === null ? '' : r.adivino
-    ? 'Acertó el caso en su última oportunidad.'
-    : 'Eligió otro caso en su última oportunidad.';
+  const ganancias = Object.entries(r.ganancias ?? {});
 
   el.innerHTML = `<section class="stage">
-    <p class="kicker">${fase(v, 'REVELACIÓN')}</p>
-    <div class="revelado">
-      ${avatar(imp.personaje)}
-      <div>
-        <h2 tabindex="-1">${esc(imp.nombre)} era el impostor</h2>
-        <p>${resumen} ${intento}</p>
-      </div>
-    </div>
+    <p class="kicker">${fase(v, 'RESULTADO')}</p>
+    ${resumenRonda(v)}
     <article class="tarjeta-caso">
       <p class="meta">El caso de la ronda</p>
       <h3>${esc(v.caso.titulo)}</h3>
       <p>${esc(v.caso.contexto)}</p>
-      <a href="${esc(v.caso.url)}" target="_blank" rel="noopener noreferrer">${esc(v.caso.fuente)} ↗</a>
+      <a href="${esc(v.caso.url)}" target="_blank" rel="noopener noreferrer">${esc(v.caso.fuente)}&nbsp;↗</a>
     </article>
     <blockquote><span class="meta">PARA CONVERSAR</span><br>${esc(v.caso.pregunta)}</blockquote>
     <h3 class="kicker">Resultado de la votación</h3>
@@ -37,11 +24,10 @@ export function montar(el, v, ctx) {
       const votos = r.votos[j.pid];
       return ficha(j, `<span class="check">${votos} voto${votos === 1 ? '' : 's'}</span>`, j.pid === r.impostor ? 'yo' : '');
     }).join('')}</ul>
-    <h3 class="kicker">Puntos de esta ronda</h3>
-    ${ganancias.length
-      ? `<ul class="ganancias">${ganancias.map(([pid, p]) => `<li>+${p} <span>${esc(jugador(v, pid)?.nombre)}</span></li>`).join('')}</ul>`
-      : '<p>Nadie sumó puntos en esta ronda.</p>'}
-    <h3 class="kicker">Marcador</h3>
+    ${ganancias.length ? `<h3 class="kicker">Puntos de esta ronda</h3>
+      <ul class="ganancias">${ganancias.map(([pid, p]) => `<li>+${p} <span>${esc(jugador(v, pid)?.nombre)}</span></li>`).join('')}</ul>` : ''}
+    <h3 class="kicker">Marcador parcial</h3>
+    <p class="estado">Los puntos de rondas sin expulsión se muestran al final.</p>
     ${marcador(v)}
     <div class="row">${v.yo.anfitrion
       ? `<button type="button" class="primary" id="siguiente">${ultima ? 'Ver resultados finales →' : 'Siguiente ronda →'}</button>`
@@ -52,6 +38,27 @@ export function montar(el, v, ctx) {
     boton.disabled = true;
     if (!(await ctx.accion('siguiente'))) boton.disabled = false;
   });
+}
+
+function resumenRonda(v) {
+  const r = v.resultado;
+  if (!r.descubierto) {
+    const mensaje = r.emitidos ? 'La votación no alcanzó la mayoría necesaria para expulsar al impostor.' : 'La ronda terminó sin votos.';
+    return `<div class="resultado-sin-expulsion">
+      <span class="sello-continuar" aria-hidden="true">↻</span>
+      <div><h2 tabindex="-1">Sin expulsión</h2><p>${mensaje} El rol queda en secreto.</p></div>
+    </div>`;
+  }
+  const imp = jugador(v, r.impostor);
+  const intento = r.adivino === null ? 'Se agotó el tiempo para adivinar el caso.'
+    : r.adivino ? 'Acertó el caso en su última oportunidad.' : 'Eligió otro caso en su última oportunidad.';
+  return `<div class="revelado">
+    ${avatar(imp.personaje)}
+    <div>
+      <h2 tabindex="-1">${esc(imp.nombre)} era el impostor</h2>
+      <p>Recibió ${r.aciertos} de ${v.jugadores.length} votos. ${intento}</p>
+    </div>
+  </div>`;
 }
 
 function montarFin(el, v, ctx) {

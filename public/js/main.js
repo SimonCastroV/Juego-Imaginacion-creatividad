@@ -2,7 +2,7 @@
 // Si la fase no cambió, solo actualiza las partes vivas (lista de jugadores, progreso) sin borrar lo que escribes.
 import { llamar, sesion } from './api.js';
 import { animarEntrada } from './ambiente.js';
-import { mostrarRol, mostrarExpulsion } from './animaciones.js';
+import { mostrarEntrada, mostrarRol, mostrarExpulsion } from './animaciones.js';
 import { aviso, dos } from './ui.js';
 import * as inicio from './pantallas/inicio.js';
 import * as lobby from './pantallas/lobby.js';
@@ -51,7 +51,7 @@ function montar(modulo, datos) {
   pantalla.innerHTML = '';
   modulo.montar(pantalla, datos, ctx);
   pantalla.className = 'enter';
-  animarEntrada(pantalla);
+  animarEntrada(pantalla, datos);
   pantalla.querySelector('h1, h2')?.focus({ preventScroll: true });
   window.scrollTo(0, 0);
 }
@@ -65,7 +65,7 @@ function pintar(v) {
     clave = nueva;
     montar(PANTALLAS[v.fase], v);
     if (v.fase === 'rol') mostrarRol(v);
-    if (v.fase === 'revelacion') mostrarExpulsion(v);
+    if (v.fase === 'revelacion' && v.resultado.descubierto) mostrarExpulsion(v);
   } else {
     actual.actualizar?.(pantalla, v, ctx);
   }
@@ -126,4 +126,7 @@ document.querySelector('#fullscreen').onclick = async () => {
 };
 
 if (sesion.get()) sondear();
-else irAlInicio();
+else {
+  irAlInicio();
+  mostrarEntrada();
+}

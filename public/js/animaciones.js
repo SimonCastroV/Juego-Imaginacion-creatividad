@@ -3,6 +3,17 @@ import { avatar } from './personajes.js';
 import { esc, jugador } from './ui.js';
 import { sinMovimiento } from './ambiente.js';
 
+export function mostrarEntrada() {
+  if (sinMovimiento()) return;
+  const entrada = document.querySelector('#entrada');
+  entrada.showModal();
+  const espera = setTimeout(() => {
+    entrada.classList.add('saliendo');
+    setTimeout(() => { if (entrada.open) entrada.close(); }, 260);
+  }, 2100);
+  entrada.addEventListener('close', () => clearTimeout(espera), { once: true });
+}
+
 function abrirCapa(clase, etiqueta, html, duracion) {
   document.querySelector('.efecto')?.remove();
   const capa = document.createElement('div');
@@ -44,11 +55,9 @@ export function mostrarRol(v) {
 export function mostrarExpulsion(v) {
   const r = v.resultado;
   const imp = jugador(v, r.impostor);
-  const texto = r.descubierto
-    ? `El grupo descubrió a ${imp.nombre}.`
-    : `${imp.nombre} era el impostor.`;
+  const texto = `El grupo descubrió a ${imp.nombre}.`;
   const promesa = abrirCapa('efecto-expulsion', 'Revelación del impostor', `
-    <div class="expulsion ${r.descubierto ? '' : 'escapo'}">
+    <div class="expulsion">
       <div class="flotando">${avatar(imp.personaje)}</div>
       <p class="texto-expulsion" aria-live="polite"></p>
     </div>`, 6500);
