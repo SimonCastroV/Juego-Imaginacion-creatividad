@@ -1,0 +1,84 @@
+/* Muñequitos, selector de personaje, listas de jugadores, votación, revelación y podio. */
+.avatar { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* Portada: personajes flotando en órbita */
+.flotante { position: absolute; width: 22%; animation: flotar 6s ease-in-out infinite; animation-delay: calc(var(--i) * -1.3s); filter: drop-shadow(0 12px 14px #4a376422); }
+@keyframes flotar { 50% { transform: translateY(-14px) rotate(calc((var(--i) - 2) * 3deg)); } }
+
+/* Sala de espera */
+.codigo-sala { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; }
+.codigo-sala > span { flex-basis: 100%; font-weight: 600; color: var(--muted); }
+.codigo { font: 700 clamp(52px, 12vw, 96px)/1 var(--mono); letter-spacing: .14em; color: var(--purple); margin: 0; }
+.selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+.opcion-personaje { display: grid; justify-items: center; gap: 4px; padding: 10px 6px; background: #fff; border-color: var(--line); border-radius: 14px; font-size: 12px; line-height: 1.2; text-align: center; }
+.opcion-personaje .avatar { width: 64px; }
+.opcion-personaje[aria-checked=true] { border: 2px solid var(--purple); background: #efe6ff; box-shadow: 0 4px 0 #b9a2e8; }
+
+.jugadores { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: 8px; }
+.jugador { display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; background: #fff; border: 1px solid #e3d8ec; border-radius: 14px; min-width: 0; }
+.jugador .avatar { width: 42px; flex: none; }
+.jugador .nombre { font-weight: 650; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.jugador.yo { border-color: var(--purple); box-shadow: inset 0 0 0 1px var(--purple); }
+.jugador .check { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.jugador .check.ok { color: #4c6b12; font-weight: 700; }
+.etiqueta { font: 10px var(--mono); text-transform: uppercase; color: var(--purple); }
+.jugadores.mini { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.jugadores.mini .avatar { width: 32px; }
+
+/* Rol */
+.chip-rol { display: inline-block; margin: 6px 0; padding: 6px 12px; border-radius: 30px; font: 700 13px var(--mono); }
+.chip-rol.impostor { background: #fde8ea; color: #9c1428; border: 1px solid #f2b8bf; }
+.chip-rol.humano { background: #edfac7; color: #3f5410; border: 1px solid #c8df8b; }
+.tarjeta-rol { margin: 20px auto; max-width: 480px; padding: 24px; border-radius: 22px; background: #fff; border: 2px solid #c8df8b; }
+.tarjeta-rol .avatar { width: 120px; margin: auto; }
+.tarjeta-rol.impostor { border-color: var(--red); background: #fff5f6; }
+.tarjeta-rol.impostor h2 { color: var(--red); }
+
+/* Escritura */
+.ayuda { color: var(--muted); font-size: 15px; margin: 0; }
+.contador { font: 12px var(--mono); color: var(--muted); }
+.enviado strong { display: block; color: #4c6b12; font-size: 20px; }
+
+/* Votación */
+.opcion { display: block; width: 100%; text-align: left; font-weight: 400; cursor: default; }
+button.opcion { cursor: pointer; border: 2px solid #e3d8ec; border-radius: 16px; }
+button.opcion:hover:not(:disabled) { background: #faf6ff; }
+button.opcion[aria-pressed=true] { border-color: var(--purple); background: #efe6ff; box-shadow: 0 5px 0 #b9a2e8; }
+button.opcion:disabled { opacity: 1; }
+.opcion.propia { opacity: .6; }
+.opcion .mia { display: block; margin-top: 8px; font: 12px var(--mono); color: var(--muted); }
+.votado { font-weight: 700; color: #4c6b12; }
+
+/* Revelación */
+.revelado { display: flex; gap: 18px; align-items: center; }
+.revelado .avatar { width: clamp(90px, 18vw, 140px); flex: none; filter: drop-shadow(0 0 18px #d7263d55); }
+.revelado h2 { color: var(--red); }
+.autor { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 14px; font-weight: 600; white-space: normal; }
+.autor .avatar { width: 28px; }
+.autor em { margin-left: auto; font: 12px var(--mono); color: var(--muted); }
+.ganancias { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ganancias li { background: #edfac7; border: 1px solid #c8df8b; border-radius: 30px; padding: 6px 14px; font: 700 15px var(--mono); }
+.ganancias span { font-family: 'Segoe UI', sans-serif; }
+.marcador { grid-template-columns: 1fr; counter-reset: puesto; }
+.marcador .jugador::before { counter-increment: puesto; content: counter(puesto); font: 700 14px var(--mono); color: var(--muted); width: 22px; text-align: center; }
+.marcador strong { font-family: var(--mono); }
+
+/* Podio final */
+.podio { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); align-items: end; gap: 10px; max-width: 520px; margin: 26px auto; overflow: hidden; padding-top: 30px; }
+.escalon { display: grid; justify-items: center; gap: 4px; text-align: center; font-weight: 700; font-size: 14px; }
+.escalon .avatar { width: 80%; max-width: 110px; animation: celebrar 1.2s ease-in-out infinite; }
+.escalon.e1 .avatar { max-width: 130px; }
+.bloque { width: 100%; display: grid; place-items: center; border-radius: 12px 12px 0 0; background: #d9cdf0; font: 700 28px var(--mono); color: var(--purple); }
+.e1 .bloque { height: 120px; background: var(--lime); color: #3f5410; }
+.e2 .bloque { height: 85px; }
+.e3 .bloque { height: 60px; }
+.e2 .avatar, .e3 .avatar { animation-delay: -.4s; }
+.confeti { position: absolute; top: -10px; left: calc(var(--n) * 5.5%); width: 8px; height: 14px; background: hsl(calc(var(--n) * 47) 80% 60%); border-radius: 2px; animation: caer 3.2s linear infinite; animation-delay: calc(var(--n) * -.37s); }
+@keyframes celebrar { 50% { transform: translateY(-8px) rotate(-3deg); } }
+@keyframes caer { to { transform: translateY(380px) rotate(540deg); opacity: .2; } }
+
+@media (max-width: 750px) {
+  .flotante { width: 26%; }
+  .revelado { flex-direction: column; text-align: center; }
+  .unirse { flex-direction: column; align-items: stretch; }
+}

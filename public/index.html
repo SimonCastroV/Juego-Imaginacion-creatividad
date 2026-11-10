@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2eef8">
+  <title>Entre Voces · ¿Quién usó IA?</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/ambiente.css">
+  <link rel="stylesheet" href="css/personajes.css">
+  <link rel="stylesheet" href="css/animaciones.css">
+</head>
+<body>
+  <header>
+    <a class="brand" href="./"><span>EV</span> ENTRE VOCES</a>
+    <div>
+      <button id="rules" class="quiet">Cómo jugar</button>
+      <button id="fullscreen" class="quiet" aria-label="Alternar pantalla completa">⛶</button>
+    </div>
+  </header>
+  <main id="screen"></main>
+  <footer><span>ENTRE VOCES / COLOMBIA</span><span>JUEGO DE AULA · ¿QUIÉN USÓ IA?</span></footer>
+
+  <dialog id="help">
+    <form method="dialog"><button class="close" aria-label="Cerrar">×</button></form>
+    <p class="kicker">MANUAL</p>
+    <h2>Cómo jugar</h2>
+    <ol>
+      <li>Una persona crea la sala y comparte el código de 4 letras. Las demás entran desde su celular con ese código.</li>
+      <li>Cada jugador elige un personaje y oprime <strong>Listo</strong>. Cuando todos están listos (mínimo 3), empieza la partida.</li>
+      <li>En cada ronda, a una persona en secreto le sale <strong>Impostor</strong>: solo ella puede usar IA. Las demás no pueden.</li>
+      <li>Todos escriben una definición de la palabra de la ronda. Luego las definiciones aparecen mezcladas y sin nombre.</li>
+      <li>Quienes no usaron IA votan por la definición que creen que hizo la IA. No se puede votar por la propia.</li>
+      <li>Puntos: cada acierto suma 2. El impostor gana 2 si engaña a la mayoría y 3 adicionales si nadie lo descubre.</li>
+      <li>Son 5 rondas con 5 palabras. Gana quien tenga más puntos al final.</li>
+    </ol>
+    <p class="meta">Los personajes son caricaturas con fines educativos. No representan ninguna posición del juego.</p>
+  </dialog>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
