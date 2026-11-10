@@ -1,8 +1,8 @@
-# Entre Voces · ¿Quién usó IA?
+# Entre Voces · El impostor
 
-Juego de aula sobre polarización en Colombia, estilo "impostor". Cada persona juega desde su celular.
-En cada ronda, a un jugador en secreto le toca usar IA para escribir su definición; los demás escriben sin IA
-y luego votan cuál creen que hizo la IA. 5 rondas, 5 palabras.
+Juego de aula sobre polarización en Colombia para 3 a 12 personas. Cada jugador entra desde su
+celular. En cada ronda, el grupo recibe un caso de la política colombiana y el impostor recibe una
+pista general. Por turnos, todos dicen una pista en voz alta y luego votan en secreto por otro jugador.
 
 ## Probar en tu computador
 
@@ -20,7 +20,8 @@ En local las salas viven en memoria: no hace falta Upstash ni instalar nada.
    Eso crea las variables `KV_REST_API_URL` y `KV_REST_API_TOKEN` (también sirven `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`).
 3. Vuelve a desplegar. Listo.
 
-Las salas se borran solas 3 horas después del último movimiento. No hay base de datos ni login.
+Las salas se guardan temporalmente en Redis y caducan tres horas después de la última escritura.
+Las partidas de la versión de definiciones requieren un código nuevo.
 
 > Cada celular consulta el estado cada 1,5 s. El plan gratis de Upstash alcanza para clases normales;
 > si juegan muchos grupos a la vez durante horas, revisa el consumo en el panel de Upstash.
@@ -29,8 +30,8 @@ Las salas se borran solas 3 horas después del último movimiento. No hay base d
 
 ```
 api/sala.js          Función de Vercel: recibe todas las acciones (POST /api/sala)
-lib/juego.js         Reglas, fases, elección del impostor y SISTEMA DE PUNTOS (PUNTOS y puntuar())
-lib/palabras.js      Las 5 palabras con su caso y pregunta para conversar
+lib/juego.js         Reglas, fases, orden de turnos, elección del impostor y puntuación
+lib/casos.js         Las cinco tarjetas, pistas privadas, fuentes y preguntas para conversar
 lib/store.js         Guardado temporal: Upstash en Vercel, memoria en local
 dev-server.js        Servidor local (npm run dev)
 public/
@@ -40,12 +41,19 @@ public/
   js/api.js          Llamadas al servidor y sesión (recargar la página vuelve a la sala)
   js/personajes.js   Muñequitos SVG de los personajes
   js/animaciones.js  Animación de rol y de expulsión del impostor
-  js/pantallas/      inicio · lobby · ronda (rol/escritura/votación) · resultado (revelación/podio)
+  js/pantallas/      inicio · lobby · ronda (rol, pistas, votación e intento) · resultado
 ```
 
 ## Fases de una ronda
 
-`lobby` → (todos listos, mínimo 3) → `rol` (7 s de animación) → `escritura` (3 min o hasta que todos envíen)
-→ `votacion` (2 min o hasta que todos voten) → `revelacion` → el anfitrión pasa a la siguiente ronda → … → `fin`.
+`lobby` → `rol` → `pistas` (20 s por jugador) → `votacion` (45 s o hasta que todos voten).
+Si más de la mitad de los jugadores vota por el impostor, tiene 25 segundos para identificar
+el caso entre cuatro opciones. Las abstenciones cuentan para calcular el umbral. Si falta mayoría,
+la ronda termina sin expulsión y el rol queda en secreto. En ambos casos se muestra el recuento,
+la fuente y la pregunta de cierre. El anfitrión pasa a la siguiente ronda o al podio final.
+
+Cada voto acertado suma 2 puntos. El impostor gana 3 si escapa con al menos un voto emitido,
+o 2 si lo descubren y acierta el caso. Los puntos de las rondas sin expulsión se muestran al final
+de la partida para guardar el secreto del rol.
 
 Los tiempos están en `REGLAS` dentro de `lib/juego.js`.

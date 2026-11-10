@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f2eef8">
-  <title>Entre Voces · ¿Quién usó IA?</title>
+  <title>Entre Voces · El impostor</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/ambiente.css">
   <link rel="stylesheet" href="css/personajes.css">
@@ -19,20 +20,31 @@
     </div>
   </header>
   <main id="screen"></main>
-  <footer><span>ENTRE VOCES / COLOMBIA</span><span>JUEGO DE AULA · ¿QUIÉN USÓ IA?</span></footer>
+  <footer><span>ENTRE VOCES / COLOMBIA</span><span>JUEGO DE AULA · EL IMPOSTOR</span></footer>
+
+  <dialog id="entrada" class="entrada-juego" aria-labelledby="entrada-titulo">
+    <div class="estrellas" aria-hidden="true"></div>
+    <div class="entrada-contenido">
+      <div class="entrada-insignia" aria-hidden="true"><span>EV</span></div>
+      <p class="meta">El juego del impostor</p>
+      <p class="entrada-titulo" id="entrada-titulo">Entre <em>voces.</em></p>
+    </div>
+    <div class="entrada-progreso" aria-hidden="true"></div>
+    <form method="dialog"><button class="saltar" autofocus>Saltar intro</button></form>
+  </dialog>
 
   <dialog id="help">
     <form method="dialog"><button class="close" aria-label="Cerrar">×</button></form>
     <p class="kicker">MANUAL</p>
     <h2>Cómo jugar</h2>
     <ol>
-      <li>Una persona crea la sala y comparte el código de 4 letras. Las demás entran desde su celular con ese código.</li>
+      <li>Una persona crea la sala y comparte el código de 4 caracteres. Las demás entran desde su celular con ese código.</li>
       <li>Cada jugador elige un personaje y oprime <strong>Listo</strong>. Cuando todos están listos (mínimo 3), empieza la partida.</li>
-      <li>En cada ronda, a una persona en secreto le sale <strong>Impostor</strong>: solo ella puede usar IA. Las demás no pueden.</li>
-      <li>Todos escriben una definición de la palabra de la ronda. Luego las definiciones aparecen mezcladas y sin nombre.</li>
-      <li>Quienes no usaron IA votan por la definición que creen que hizo la IA. No se puede votar por la propia.</li>
-      <li>Puntos: cada acierto suma 2. El impostor gana 2 si engaña a la mayoría y 3 adicionales si nadie lo descubre.</li>
-      <li>Son 5 rondas con 5 palabras. Gana quien tenga más puntos al final.</li>
+      <li>El impostor recibe una pista general. El resto recibe el caso. Lean su tarjeta en privado.</li>
+      <li>En su turno, cada persona dice una pista en voz alta. Eviten los nombres propios y el título del caso.</li>
+      <li>Todos votan en secreto por otro jugador. Solo se descubre al impostor si más de la mitad de la sala vota por él. En ese caso tiene un intento para identificar el caso.</li>
+      <li>Cada voto acertado suma 2 puntos. El impostor gana 3 si escapa con al menos un voto emitido, o 2 si lo descubren y acierta el caso. Los puntos de las rondas sin expulsión se muestran en el marcador final.</li>
+      <li>Después de cada revelación, conversen sobre la pregunta del caso. Gana quien tenga más puntos al final de las 5 rondas.</li>
     </ol>
     <p class="meta">Los personajes son caricaturas con fines educativos. No representan ninguna posición del juego.</p>
   </dialog>

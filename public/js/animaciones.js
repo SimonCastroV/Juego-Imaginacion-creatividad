@@ -3,6 +3,17 @@ import { avatar } from './personajes.js';
 import { esc, jugador } from './ui.js';
 import { sinMovimiento } from './ambiente.js';
 
+export function mostrarEntrada() {
+  if (sinMovimiento()) return;
+  const entrada = document.querySelector('#entrada');
+  entrada.showModal();
+  const espera = setTimeout(() => {
+    entrada.classList.add('saliendo');
+    setTimeout(() => { if (entrada.open) entrada.close(); }, 260);
+  }, 2100);
+  entrada.addEventListener('close', () => clearTimeout(espera), { once: true });
+}
+
 function abrirCapa(clase, etiqueta, html, duracion) {
   document.querySelector('.efecto')?.remove();
   const capa = document.createElement('div');
@@ -28,25 +39,25 @@ function abrirCapa(clase, etiqueta, html, duracion) {
 }
 
 export function mostrarRol(v) {
+  const duracion = Math.min(5600, v.hasta - v.ahora - 400);
+  if (duracion < 500) return;
   const impostor = v.yo.rol === 'impostor';
   const grupo = impostor ? [jugador(v, v.yo.pid)] : v.jugadores;
   return abrirCapa(`efecto-rol ${impostor ? 'impostor' : 'humano'}`, 'Tu rol en esta ronda', `
     <div class="rol-anim">
       <p class="shh">Ronda ${v.ronda + 1} · Shhh…</p>
-      <h2 class="rol-titulo">${impostor ? 'Impostor' : 'Sin IA'}</h2>
-      <p class="rol-sub">${impostor ? 'Te toca usar IA. Que no te descubran.' : 'Hay <strong>1 impostor</strong> usando IA entre ustedes.'}</p>
+      <h2 class="rol-titulo">${impostor ? 'Impostor' : 'Conoces el caso'}</h2>
+      <p class="rol-sub">${impostor ? 'Recibirás una pista general. Improvisa cuando sea tu turno.' : 'Tu tarjeta contiene el caso. Hay <strong>1 impostor</strong> entre ustedes.'}</p>
       <div class="fila-personajes">${grupo.map((j, i) => `<figure style="--i:${i}" class="${j.pid === v.yo.pid ? 'yo' : ''}">${avatar(j.personaje)}<figcaption>${esc(j.nombre)}</figcaption></figure>`).join('')}</div>
-    </div>`, 5600);
+    </div>`, duracion);
 }
 
 export function mostrarExpulsion(v) {
   const r = v.resultado;
   const imp = jugador(v, r.impostor);
-  const texto = r.aciertos === 0
-    ? `${imp.nombre} era el impostor… y nadie lo descubrió.`
-    : `${imp.nombre} era el impostor. ${r.aciertos} de ${r.votantes} lo descubrieron.`;
+  const texto = `El grupo descubrió a ${imp.nombre}.`;
   const promesa = abrirCapa('efecto-expulsion', 'Revelación del impostor', `
-    <div class="expulsion ${r.aciertos === 0 ? 'escapo' : ''}">
+    <div class="expulsion">
       <div class="flotando">${avatar(imp.personaje)}</div>
       <p class="texto-expulsion" aria-live="polite"></p>
     </div>`, 6500);

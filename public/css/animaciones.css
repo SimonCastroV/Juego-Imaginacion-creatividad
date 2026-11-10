@@ -1,4 +1,68 @@
-/* Animaciones a pantalla completa: revelar rol y expulsar al impostor. */
+/* Animaciones a pantalla completa. */
+.entrada-juego {
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 24px;
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 65%, #321d53, #110b1d 72%);
+  color: #fff;
+  text-align: center;
+}
+.entrada-juego[open] { display: grid; place-items: center; animation: aparecer .26s ease-out both; }
+.entrada-juego.saliendo { animation: desaparecer .26s ease-in both; }
+.entrada-juego::backdrop { background: transparent; }
+.entrada-juego form { position: absolute; right: 16px; bottom: 16px; }
+.entrada-juego .saltar { position: static; }
+.entrada-contenido { position: relative; display: grid; justify-items: center; }
+.entrada-contenido .meta { color: #e5d7ff; margin: 20px 0 6px; animation: subir .45s .24s ease-out both; }
+.entrada-titulo {
+  margin: 0;
+  font: 500 clamp(60px, 14vw, 156px)/.92 Georgia, serif;
+  letter-spacing: -.065em;
+  animation: entrada-tipo .65s .34s cubic-bezier(.2, .75, .25, 1) both;
+}
+.entrada-titulo em { color: var(--lime); }
+.entrada-insignia {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(64px, 11vw, 100px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--lime);
+  color: #231633;
+  box-shadow: 0 0 48px #dafa7650;
+  font: 700 clamp(24px, 5vw, 42px) var(--mono);
+  animation: entrada-insignia .65s cubic-bezier(.15, .8, .3, 1.25) both;
+}
+.entrada-insignia::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border: 1px solid #dafa76aa;
+  border-radius: 50%;
+  animation: entrada-onda 1.4s .32s ease-out both;
+}
+.entrada-progreso {
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: var(--lime);
+  transform-origin: left center;
+  animation: entrada-carga 2.1s linear both;
+}
+@keyframes entrada-tipo { from { opacity: 0; transform: translateY(24px) scale(.96); } }
+@keyframes entrada-insignia { from { opacity: 0; transform: perspective(420px) rotateY(-110deg) scale(.7); } }
+@keyframes entrada-onda { from { opacity: .85; transform: scale(.92); } to { opacity: 0; transform: scale(2.2); } }
+@keyframes entrada-carga { from { transform: scaleX(0); } }
+
+/* Revelar el rol y expulsar al impostor. */
 .efecto { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: hidden; background: radial-gradient(ellipse at 50% 60%, #1d1436, #07050d 70%); color: #fff; text-align: center; padding: 20px; animation: aparecer .35s ease-out; }
 .efecto.saliendo { animation: desaparecer .4s ease-in forwards; }
 .estrellas { position: absolute; inset: -50%; background-image: radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 20%, #fff, transparent), radial-gradient(1.5px 1.5px at 40% 80%, #fffd, transparent), radial-gradient(1px 1px at 85% 65%, #fff, transparent), radial-gradient(1px 1px at 10% 70%, #fffa, transparent); background-size: 220px 220px; animation: viajar 14s linear infinite; opacity: .8; }
@@ -23,7 +87,6 @@
 /* Expulsión: el muñeco flota por el espacio girando */
 .expulsion { position: absolute; inset: 0; display: grid; place-items: center; }
 .flotando { position: absolute; top: 32%; left: 0; width: clamp(90px, 20vw, 150px); animation: expulsar 6.5s linear both; }
-.escapo .flotando { animation-name: escapar; }
 .texto-expulsion { position: relative; margin: 0; padding: 0 20px; top: 18%; font: 600 clamp(20px, 4.5vw, 34px)/1.3 Georgia, serif; max-width: 26ch; min-height: 2.6em; }
 
 @keyframes aparecer { from { opacity: 0; } }
@@ -33,7 +96,6 @@
 @keyframes golpe { from { opacity: 0; transform: scale(2.4); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes subir { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 @keyframes expulsar { from { transform: translateX(-30vw) rotate(0); } to { transform: translateX(130vw) rotate(720deg); } }
-@keyframes escapar { 0% { transform: translate(-30vw, 10vh) rotate(0); } 60% { transform: translate(50vw, -5vh) rotate(200deg) scale(1.1); } 100% { transform: translate(50vw, -80vh) rotate(260deg) scale(.4); } }
 
 @media (prefers-reduced-motion: reduce) {
   .rol-titulo, .rol-sub, .fila-personajes figure { opacity: 1; }

@@ -17,7 +17,7 @@ export function montar(el, { mensaje } = {}, ctx) {
     <div>
       <p class="kicker">EXPERIMENTO DE AULA / COLOMBIA</p>
       <h1 tabindex="-1">Entre<br><em>voces.</em></h1>
-      <p class="lede">Una palabra. Varias voces. Una la escribió una IA. ¿Puedes descubrir al impostor?</p>
+      <p class="lede">Un caso de la política colombiana. Una pista por persona. ¿Quién está improvisando?</p>
       ${mensaje ? `<p class="nota" role="alert">${esc(mensaje)}</p>` : ''}
       <form class="panel acceso" novalidate>
         <label>Tu nombre<input name="nombre" maxlength="18" autocomplete="nickname" placeholder="Ej. Laura" value="${esc(nombreGuardado())}"></label>
@@ -28,10 +28,10 @@ export function montar(el, { mensaje } = {}, ctx) {
           <button type="submit" data-accion="unirse">Unirse →</button>
         </div>
       </form>
-      <div class="strip"><span>5 RONDAS</span><span>DESDE 3 JUGADORES</span><span>1 IMPOSTOR CON IA</span></div>
+      <div class="strip"><span>5 CASOS</span><span>DE 3 A 12 JUGADORES</span><span>1 IMPOSTOR POR RONDA</span></div>
     </div>
     <div class="art" aria-hidden="true">
-      <span class="meta">¿QUIÉN USÓ IA?</span>
+      <span class="meta">¿QUIÉN IMPROVISA?</span>
       <div class="orbit"></div><div class="orbit second"></div>
       ${PERSONAJES.slice(0, 5).map((p, i) => `<div class="flotante" style="--i:${i};left:${POSICIONES[i][0]}%;top:${POSICIONES[i][1]}%">${avatar(p.id)}</div>`).join('')}
       <small>CARICATURAS · FINES EDUCATIVOS</small>

@@ -45,7 +45,13 @@ h1 { font-size: clamp(72px, 8.5vw, 130px); }
 button.primary { background: #dbf58e; border-color: #718341; box-shadow: 0 4px 0 #9fb75f, 0 9px 20px #76884e1f; border-radius: 12px; padding: 13px 22px; }
 button.primary:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 7px 0 #9fb75f, 0 14px 22px #76884e24; }
 button.primary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #9fb75f; }
-.stage { padding: clamp(20px, 4vw, 48px); background: #faf8fce8; border: 1px solid #fff; border-radius: 28px; box-shadow: 0 20px 60px #6952810c; }
+.stage {
+  padding: clamp(20px, 4vw, 48px);
+  background: radial-gradient(ellipse at 100% 0, #ebe0ff 0, transparent 45%), #faf8fc;
+  border: 1px solid #fff;
+  border-radius: 28px;
+  box-shadow: 0 20px 60px #69528115;
+}
 .stage h2 { font-size: clamp(38px, 5vw, 70px); }
 .panel { background: #fff; border-color: #e3d8ec; box-shadow: 0 7px 18px #65517908; }
 blockquote { background: #eee7f7; border-width: 0 0 0 4px; }
@@ -53,6 +59,23 @@ blockquote { background: #eee7f7; border-width: 0 0 0 4px; }
 .winner { box-shadow: 0 0 0 3px #c8df8b, 0 10px 25px #7d944b26 !important; }
 .enter .scene-entry { animation: object-enter .55s cubic-bezier(.2, .75, .25, 1) both; animation-delay: var(--entry-delay); }
 dialog[open] { animation: object-enter .25s ease-out; box-shadow: 0 30px 100px #20152e55; }
+
+.rondas {
+  display: flex;
+  gap: 5px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+  width: min(230px, 100%);
+}
+.rondas li { flex: 1; height: 4px; border-radius: 4px; background: #ded1ee; }
+.rondas .completa { background: #8971bd; }
+.rondas .actual {
+  background: var(--purple);
+  transform-origin: left center;
+  animation: segmento-activo .45s .18s ease-out both;
+}
+@keyframes segmento-activo { from { transform: scaleX(.15); opacity: .35; } }
 
 @keyframes drift { 50% { transform: translate3d(8px, -18px, 0) rotate(7deg); } }
 @keyframes cube-turn { from { transform: rotateX(-20deg) rotateY(25deg) rotateZ(8deg); } to { transform: rotateX(340deg) rotateY(385deg) rotateZ(8deg); } }

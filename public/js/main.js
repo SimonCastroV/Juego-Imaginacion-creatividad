@@ -2,26 +2,32 @@
 // Si la fase no cambió, solo actualiza las partes vivas (lista de jugadores, progreso) sin borrar lo que escribes.
 import { llamar, sesion } from './api.js';
 import { animarEntrada } from './ambiente.js';
-import { mostrarRol, mostrarExpulsion } from './animaciones.js';
+import { mostrarEntrada, mostrarRol, mostrarExpulsion } from './animaciones.js';
 import { aviso, dos } from './ui.js';
 import * as inicio from './pantallas/inicio.js';
 import * as lobby from './pantallas/lobby.js';
 import * as ronda from './pantallas/ronda.js';
 import * as resultado from './pantallas/resultado.js';
 
-const PANTALLAS = { lobby, rol: ronda, escritura: ronda, votacion: ronda, revelacion: resultado, fin: resultado };
+const PANTALLAS = { lobby, rol: ronda, pistas: ronda, votacion: ronda, adivinar: ronda, revelacion: resultado, fin: resultado };
 const pantalla = document.querySelector('#screen');
 let vista = null, clave = null, actual = null, desfase = 0, sondeo = null;
+let idSondeo = 0, idAccion = 0, accionesEnCurso = 0;
 
 const ctx = {
   vista: () => vista,
   async accion(nombre, datos) {
+    const id = ++idAccion;
+    accionesEnCurso++;
     try {
-      pintar(await llamar(nombre, datos));
+      const respuesta = await llamar(nombre, { ronda: vista?.ronda, ...datos });
+      if (id === idAccion) pintar(respuesta);
       return true;
     } catch (error) {
-      manejarError(error);
+      if (id === idAccion) manejarError(error);
       return false;
+    } finally {
+      accionesEnCurso--;
     }
   },
   async entrar(nombre, datos) {
@@ -45,7 +51,7 @@ function montar(modulo, datos) {
   pantalla.innerHTML = '';
   modulo.montar(pantalla, datos, ctx);
   pantalla.className = 'enter';
-  animarEntrada(pantalla);
+  animarEntrada(pantalla, datos);
   pantalla.querySelector('h1, h2')?.focus({ preventScroll: true });
   window.scrollTo(0, 0);
 }
@@ -59,7 +65,7 @@ function pintar(v) {
     clave = nueva;
     montar(PANTALLAS[v.fase], v);
     if (v.fase === 'rol') mostrarRol(v);
-    if (v.fase === 'revelacion') mostrarExpulsion(v);
+    if (v.fase === 'revelacion' && v.resultado.descubierto) mostrarExpulsion(v);
   } else {
     actual.actualizar?.(pantalla, v, ctx);
   }
@@ -68,6 +74,8 @@ function pintar(v) {
 
 function irAlInicio(mensaje) {
   clearTimeout(sondeo);
+  idSondeo++;
+  idAccion++;
   sesion.borrar();
   vista = null;
   clave = 'inicio';
@@ -83,13 +91,18 @@ function manejarError(error) {
 async function sondear() {
   clearTimeout(sondeo);
   if (!sesion.get()) return;
-  try {
-    pintar(await llamar('estado'));
-  } catch (error) {
-    manejarError(error);
-    if (!sesion.get()) return;
+  const id = ++idSondeo;
+  const accion = idAccion;
+  const vigente = () => id === idSondeo && accion === idAccion;
+  if (!accionesEnCurso) {
+    try {
+      const respuesta = await llamar('estado');
+      if (vigente()) pintar(respuesta);
+    } catch (error) {
+      if (vigente()) manejarError(error);
+    }
   }
-  sondeo = setTimeout(sondear, document.hidden ? 4000 : 1500);
+  if (id === idSondeo && sesion.get()) sondeo = setTimeout(sondear, document.hidden ? 4000 : 1500);
 }
 
 function marcarRelojes() {
@@ -113,4 +126,7 @@ document.querySelector('#fullscreen').onclick = async () => {
 };
 
 if (sesion.get()) sondear();
-else irAlInicio();
+else {
+  irAlInicio();
+  mostrarEntrada();
+}
